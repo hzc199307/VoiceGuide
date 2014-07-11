@@ -3,6 +3,7 @@ package com.ne.voiceguide.fragment;
 //import com.baidu.location.BDLocation;
 //import com.baidu.location.BDLocationListener;
 //import com.baidu.platform.comapi.basestruct.GeoPoint;
+import com.google.android.gms.location.LocationListener;
 import com.ne.voiceguide.MainActivity;
 import com.ne.voiceguide.R;
 //import com.ne.voiceguide.activity.CityActivity;
@@ -11,12 +12,15 @@ import com.ne.voiceguide.adapter.CityBeanListAdapter;
 import com.ne.voiceguide.bean.CityBean;
 //import com.ne.voiceguide.util.BaiduLocationUtil;
 
+import com.ne.voiceguide.utils.GoogleLocationUtil;
+
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
+import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -32,20 +36,20 @@ import android.widget.RelativeLayout;
 /**
  * 
  * @ClassName: HikingFragment 
+ * @author 贺智超
  * @Description: TODO 
- * @author HeZhichao
- * @date 2014年5月29日 下午3:41:46 
- *
+ * @date 2014年7月8日 下午2:55:39
  */
 public class HikingFragment extends Fragment {
 
-	private final String TAG = "HikingFragment";
+	private final static String TAG = "HikingFragment";
 	int mNum;  
 	private Context mContext ; 
 	private LinearLayout hiking_Location ;
 	private ListView citybean_listview = null;
 	private CityBeanListAdapter mCityBeanListAdapter = null;
 	
+	private GoogleLocationUtil mGoogleLocationUtil ;
 //	private BaiduLocationUtil mLocationUtil;
 //	private MyBDLocationListenner mMyBDLocationListenner;
 	private AlertDialog.Builder builder;
@@ -90,12 +94,30 @@ public class HikingFragment extends Fragment {
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
+				Log.v(TAG, "hiking_Location is clicked");
+				mGoogleLocationUtil.connectOneTime();
 //				mLocationUtil.requestLocation();
 				
 			}
 		});
 //		mMyBDLocationListenner = new MyBDLocationListenner();
 //		mLocationUtil = new BaiduLocationUtil(mContext, mMyBDLocationListenner);
+		mGoogleLocationUtil = new GoogleLocationUtil(mContext,new LocationListener() 
+		{
+			private CityBean mCityBean;
+			@Override
+			public void onLocationChanged(Location location) {
+				// TODO Auto-generated method stub
+				Log.v(TAG, "onLocationChanged");
+				if (location == null)
+					return ;
+				mCityBean = mCityBeanListAdapter.getNearestCity(location.getLatitude(),location.getLongitude());
+				//			cityName = location.getCity();
+				Log.v(TAG, "city:"+location.getLatitude());
+//							Log.v(TAG, "city:"+location.getCity());
+				
+			}
+		});
 		return view;  
 	}  
 

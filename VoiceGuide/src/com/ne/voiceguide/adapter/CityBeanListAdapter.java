@@ -21,7 +21,8 @@ import com.ne.voiceguide.bean.CityBean;
 import com.ne.voiceguide.dao.CitySceneDao;
 
 public class CityBeanListAdapter extends BaseAdapter{
-	private final String TAG = "CityBeanListAdapter";
+	
+	private static final String TAG = "CityBeanListAdapter";
 	private List<CityBean> listData = null;
 	private LayoutInflater inflater = null;
 	private Context mContext;
